@@ -23,7 +23,7 @@ class PostgresOrderRepository implements OrderRepository {
           'amt': order.totalAmount,
           'items': order.items,
           'status': order.status.name,
-          'version': order.version,
+          'v': order.version,
         },
       );
 

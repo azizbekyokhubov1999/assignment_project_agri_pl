@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:postgres/postgres.dart';
 import '../persistence/db_connection.dart';
+import '../../core/outbox/outbox_signal.dart';
 
 class OutboxWorker {
   /// This is the entry point for the Isolate.
@@ -47,7 +48,3 @@ class OutboxWorker {
   }
 }
 
-/// Simple class to handle Isolate communication
-class StopSignal {
-  bool shouldStop = false;
-}
