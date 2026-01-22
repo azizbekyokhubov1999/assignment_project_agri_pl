@@ -5,7 +5,7 @@ import '../../core/resilience/circuit_breaker.dart';
 class MongoAuditService implements AuditService {
   final Db db;
   late DbCollection _collection;
-  final _breaker = CircuitBreaker(threshold: 2); // Fails after 2 tries
+  final _breaker = CircuitBreaker(threshold: 2);
 
   MongoAuditService(this.db) {
     _collection = db.collection('audit_logs');

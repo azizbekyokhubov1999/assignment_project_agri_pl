@@ -12,6 +12,7 @@ class ProcurementSaga {
   /// This function manages the multi-step "workflow" of an order.
   Future<void> execute(Order order) async {
     try {
+      await auditService.logAction(order.id, 'SAGA_START', {'supplier': order.supplierId});
       print(' [Saga] Starting workflow for Order: ${order.id}');
 
       // Step 1: Persist the initial order (Status: Pending)
