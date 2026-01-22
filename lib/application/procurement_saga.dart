@@ -1,16 +1,18 @@
 import '../domain/entities/order.dart';
 import '../domain/entities/order_status.dart';
 import '../domain/repositories/order_repository.dart';
+import '../domain/services/audit_service.dart';
 
 class ProcurementSaga {
   final OrderRepository repository;
+  final AuditService auditService;
 
-  ProcurementSaga(this.repository);
+  ProcurementSaga(this.repository, this.auditService);
 
   /// This function manages the multi-step "workflow" of an order.
   Future<void> execute(Order order) async {
     try {
-      print('🛠️ [Saga] Starting workflow for Order: ${order.id}');
+      print(' [Saga] Starting workflow for Order: ${order.id}');
 
       // Step 1: Persist the initial order (Status: Pending)
       // This also triggers our Transactional Outbox!
@@ -39,9 +41,9 @@ class ProcurementSaga {
     }
   }
 
-  /// P3: The Compensating Transaction (The "Undo" logic)
+  /// The Compensating Transaction (The "Undo" logic)
   Future<void> _compensate(String orderId) async {
-    print('🔄 [Saga] INITIATING COMPENSATION: Rolling back Order $orderId');
+    print(' [Saga] INITIATING COMPENSATION: Rolling back Order $orderId');
     // We update the status to 'compensated' so the business knows this failed
     // and was safely rolled back.
     await repository.updateOrderStatus(orderId, OrderStatus.compensated);
