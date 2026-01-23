@@ -19,10 +19,10 @@ void main(List<String> args) async {
   print('//Connecting to PostgreSQL...');
   final pgConnection = await DbConnection.create();
 
-  // 2. Initialize MongoDB (P4: Polyglot Persistence)
+  // 2. Initialize MongoDB
   print('//Connecting to MongoDB...');
-  final mongoDb = await Db.create('mongodb://localhost:27017/procurement_audit');
-  await mongoDb.open();
+  final String mongoHost = Platform.environment['MONGO_HOST'] ?? 'localhost';
+  final mongoDb = await Db.create('mongodb://$mongoHost:27017/procurement_audit');  await mongoDb.open();
   print(' Both Databases Connected.');
 
   // 3. Initialize Layers
