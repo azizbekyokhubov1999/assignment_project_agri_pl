@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: backend
-          image: agri-backend:v2
-          imagePullPolicy: Never # Crucial for local Docker Desktop images
+          image: azizdevops88/agri-backend:latest
+          imagePullPolicy: Always
           env:
           - name: DB_HOST
             value: "postgres-service"
