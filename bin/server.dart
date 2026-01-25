@@ -13,8 +13,14 @@ import 'package:assignment_project_agri_pl/infrastructure/concurrency/outbox_wor
 import 'package:assignment_project_agri_pl/application/procurement_saga.dart';
 import 'package:assignment_project_agri_pl/infrastructure/web/order_controller.dart';
 import 'package:assignment_project_agri_pl/core/outbox/outbox_signal.dart';
+import 'package:prometheus_client/prometheus_client.dart';
+import 'package:assignment_project_agri_pl/infrastructure/monitoring/metrics.dart';
+
+
 
 void main(List<String> args) async {
+  // to get total request
+  CollectorRegistry.defaultRegistry.register(httpRequestsTotal);
   // 1. Initialize Postgres
   print('//Connecting to PostgreSQL...');
   final pgConnection = await DbConnection.create();
