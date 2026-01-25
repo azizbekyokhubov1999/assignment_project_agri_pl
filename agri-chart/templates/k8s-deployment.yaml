@@ -28,8 +28,8 @@ metadata:
   name: agri-backend-service
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "8080"
     prometheus.io/path: "/metrics"
+    prometheus.io/port: "8080"
 spec:
   selector:
     app: agri-backend
