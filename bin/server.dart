@@ -18,6 +18,22 @@ import 'package:assignment_project_agri_pl/infrastructure/monitoring/metrics.dar
 import 'package:prometheus_client/format.dart' as format;
 
 
+Middleware monitorRequests() {
+  return (Handler innerHandler) {
+    return (Request request) async {
+      final response = await innerHandler(request);
+
+      // Metrikalarni yangilash (barcha so'rovlar uchun)
+      httpRequestsTotal.labels([
+        request.method,
+        request.url.path.isEmpty ? '/' : '/${request.url.path}',
+        response.statusCode.toString( ),
+      ]).inc();
+
+      return response;
+    };
+  };
+}
 
 void main(List<String> args) async {
   // to get total request
@@ -57,6 +73,7 @@ void main(List<String> args) async {
 
   final handler = const Pipeline()
       .addMiddleware(logRequests())
+      .addMiddleware(monitorRequests()) // for manitor metrics
       .addHandler(router);
 
   // 6. Start Server
