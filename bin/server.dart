@@ -15,6 +15,7 @@ import 'package:assignment_project_agri_pl/infrastructure/web/order_controller.d
 import 'package:assignment_project_agri_pl/core/outbox/outbox_signal.dart';
 import 'package:prometheus_client/prometheus_client.dart';
 import 'package:assignment_project_agri_pl/infrastructure/monitoring/metrics.dart';
+import 'package:prometheus_client/format.dart' as format;
 
 
 
@@ -44,6 +45,14 @@ void main(List<String> args) async {
   // 5. Setup Routes & Middleware
   final router = Router();
   router.get('/health', (Request rec) => Response.ok('{"status": "UP"}', headers: {'Content-Type': 'application/json'}));
+
+  router.get('/metrics', (Request request) async {
+    final metrics = await CollectorRegistry.defaultRegistry.collectMetricFamilySamples();
+    final buffer = StringBuffer();
+    format.write004(buffer, metrics);
+    return Response.ok(buffer.toString(), headers: {'Content-Type': format.contentType});
+  });
+
   router.mount('/api', orderController.router);
 
   final handler = const Pipeline()
