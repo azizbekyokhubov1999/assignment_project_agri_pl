@@ -38,9 +38,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/agri-backend:latest # We use 'latest' for simplicity now
+          tags: ${{ secrets.DOCKER_USERNAME }}/agri-backend:latest
 
-      # WE HAVE COMMENTED THIS SECTION OUT TO AVOID PERMISSION ERRORS
       # - name: Update Deployment YAML Tag
       #   run: |
       #     sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/agri-backend:${{ github.sha }}|" k8s-deployment.yaml

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: azizdevops88/agri-backend:latest
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: Always
           env:
           - name: DB_HOST
