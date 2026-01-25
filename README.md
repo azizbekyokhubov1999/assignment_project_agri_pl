@@ -64,7 +64,7 @@ I configured 7 specific panels to monitor the health and performance of the plat
 ### Verifying Metrics:
  > The metrics can be verified by visiting: http://localhost:8080/metrics. 
 > 
-> docs/metrics.jpg 
+> docs/metrics.png 
 
 ### Server link
 > http://localhost:8080/health
