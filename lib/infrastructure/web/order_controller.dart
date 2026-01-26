@@ -3,7 +3,8 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import '../../application/procurement_saga.dart';
 import '../../domain/entities/order.dart';
-import '../monitoring/metrics.dart';
+import '../monitoring/custom_metrics.dart';
+import '../monitoring/custom_metrics.dart'; // Make sure this import is there
 
 
 
@@ -30,6 +31,12 @@ class OrderController {
         // We don't await the WHOLE saga before responding to the user
         // to keep latency low
         saga.execute(newOrder);
+
+
+        CustomMetrics.ordersCreated.labels([
+          payload['supplierId'].toString(),
+          'general'
+        ]).inc();
 
         httpRequestsTotal.labels(['POST', '/orders', '200']).inc();
 

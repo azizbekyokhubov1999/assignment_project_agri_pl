@@ -1,6 +1,19 @@
+replicaCount: 1
+
 image:
   repository: azizdevops88/agri-backend
   tag: latest
+  pullPolicy: Always
 
 service:
+  type: ClusterIP
   port: 8080
+
+metrics:
+  enabled: true
+  path: /metrics
+  port: 8080
+
+monitoring:
+  enabled: true
+  path: /metrics

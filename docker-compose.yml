@@ -13,7 +13,6 @@ services:
     ports:
       - "27017:27017"
 
-  # Optional: For P5 Observability
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:

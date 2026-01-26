@@ -14,7 +14,7 @@ import 'package:assignment_project_agri_pl/application/procurement_saga.dart';
 import 'package:assignment_project_agri_pl/infrastructure/web/order_controller.dart';
 import 'package:assignment_project_agri_pl/core/outbox/outbox_signal.dart';
 import 'package:prometheus_client/prometheus_client.dart';
-import 'package:assignment_project_agri_pl/infrastructure/monitoring/metrics.dart';
+import 'package:assignment_project_agri_pl/infrastructure/monitoring/custom_metrics.dart';
 import 'package:prometheus_client/format.dart' as format;
 
 
@@ -38,6 +38,10 @@ Middleware monitorRequests() {
 void main(List<String> args) async {
   // to get total request
   CollectorRegistry.defaultRegistry.register(httpRequestsTotal);
+  CollectorRegistry.defaultRegistry.register(CustomMetrics.ordersCreated);
+  CollectorRegistry.defaultRegistry.register(CustomMetrics.sagaTransactions);
+  CollectorRegistry.defaultRegistry.register(CustomMetrics.activeOrders);
+
   // 1. Initialize Postgres
   print('//Connecting to PostgreSQL...');
   final pgConnection = await DbConnection.create();

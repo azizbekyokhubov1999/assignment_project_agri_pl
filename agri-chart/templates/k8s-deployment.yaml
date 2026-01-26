@@ -3,38 +3,27 @@ kind: Deployment
 metadata:
   name: agri-backend
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: agri-backend
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: {{ .Values.metrics.enabled | quote }}
+        prometheus.io/path: {{ .Values.metrics.path | quote }}
+        prometheus.io/port: {{ .Values.metrics.port | quote }}
       labels:
         app: agri-backend
     spec:
       containers:
         - name: backend
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: Always
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
           env:
-          - name: DB_HOST
-            value: "postgres-service"
-          - name: MONGO_HOST
-            value: "mongodb-service"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: agri-backend-service
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/path: "/api/metrics"
-    prometheus.io/port: "8080"
-spec:
-  selector:
-    app: agri-backend
-  ports:
-    - protocol: TCP
-      port: 80       # Port accessible from outside
-      targetPort: 8080 # Port inside the container
-  type: LoadBalancer # Docker Desktop will map this to localhost:80
+            - name: DB_HOST
+              value: "postgres-service"
+            - name: MONGO_HOST
+              value: "mongodb-service"
