@@ -1,78 +1,66 @@
-A sample command-line application providing basic argument parsing with an entrypoint in `bin/`.
-
-# Agri-Platform: Procurement Service & DevOps Infrastructure
+# Agri-Platform: Procurement Service & Cloud-Native Infrastructure
 
 ##  Project Overview
-This project implements a reliable, cloud-native Procurement Service for an Agricultural Platform. It utilizes a **Clean Architecture** approach in Dart, integrating distributed transaction management via the **Saga Pattern**, automated deployments through **Argo CD**, and comprehensive monitoring with **Prometheus and Grafana**.
+This project implements a high-reliability Procurement Service for an Agricultural Platform. It showcases a complete DevOps lifecycle, moving from "hardcoded" deployments to a professional **GitOps** and **Telemetry-driven** architecture.
 
 ---
 
 ##  Technical Architecture
 
-### 1. Distributed Reliability (Saga Pattern)
-To ensure data consistency across multiple databases (PostgreSQL for orders and MongoDB for audit logs), I implemented the **Procurement Saga**.
-* **Database Consistency:** Uses an Outbox pattern and Isolate-based workers to ensure reliable message delivery.
-* **Dual-Persistence:** PostgreSQL manages the core relational order data, while MongoDB handles the non-relational audit trails.
+### 1. Custom Observability (Business Metrics)
+Unlike standard system metrics, this application implements **Domain-Specific Telemetry** using the `prometheus_client` library.
+* **Orders Tracking:** `agri_orders_created_total` monitors procurement volume by supplier and category.
+* **Saga Reliability:** `agri_saga_transactions_total` tracks the success, failure, and compensation steps of the distributed transaction.
+* **System Health:** Custom `http_requests_total` with labels for method, path, and status code.
 
-### 2. Infrastructure as Code (Helm)
-The deployment is managed via **Helm Charts** (`agri-chart`), allowing for versioned and reproducible infrastructure.
-* **Service Discovery:** Configured Kubernetes Services with specialized annotations for automated Prometheus scraping.
-* **Environmental Parity:** Scalable Deployment configurations for the Agri-Backend, PostgreSQL, and MongoDB.
+### 2. Distributed Reliability (Saga Pattern)
+To ensure data consistency across **PostgreSQL** (Orders) and **MongoDB** (Audit Logs), a **Saga Pattern** was implemented.
+* **Compensating Transactions:** Ensures system integrity if one database operation fails.
+* **Isolate-based Workers:** Handles outbox signals asynchronously for high performance.
+
+---
+
+##  Infrastructure as Code (Helm)
+The project has been refactored from static YAML files into a **Proper Helm Chart** to ensure dynamic, reusable deployments.
+* **Dynamic Values:** All environment-specific data (images, ports, paths) is managed via `values.yaml`.
+* **Templates:** Utilizes Go-templating in `k8s-deployment.yaml` and `service.yaml` for parameterization.
+
 
 ---
 
 ##  Continuous Delivery (GitOps)
-I implemented a **GitOps workflow** using **Argo CD**. Every change pushed to the `main` branch is automatically synchronized with the Kubernetes cluster, ensuring that the live environment always matches the desired state in Git.
+Deployment is fully automated using **Argo CD**.
+* **Automated Sync:** Argo CD monitors the GitHub repository and synchronizes the cluster state with the Helm chart.
+* **Self-Healing:** Any manual changes to the cluster are automatically reverted by the Argo CD controller to maintain the "Source of Truth" in Git.
 
-> docs/argocd.jpg > *Evidence: Showing the Agri-Backend, Postgres, and Mongo pods in a 'Healthy' and 'Synced' state.*
-
----
-
-##  Observability & Monitoring
-A core requirement was the implementation of custom business metrics and infrastructure monitoring.
-
-### Custom Metrics Implementation
-Using the `prometheus_client` library, I exposed a `/metrics` endpoint in the Dart application.
-* **Metric Tracked:** `http_requests_total`
-* **Labels:** Method (GET/POST), Path (/orders, /health), and Status (200, 500).
-
-### Grafana Dashboards
-I configured 7 specific panels to monitor the health and performance of the platform:
-1. **CPU Utilization:** Tracks container-level resource usage.
-2. **Total Requests:** Aggregate count of all incoming traffic.
-3. **Success Requests:** Filtered view of HTTP 200 responses.
-4. **Error Requests:** Filtered view of HTTP 500 responses for incident detection.
-5. **Request Type:** Breakdown of GET vs. POST traffic.
-6. **Request Path:** Identification of most-visited endpoints.
-7. **Warning/Health:** A real-time heartbeat monitor (Up/Down status).
-
-> docs/grafana_ev.jpg > *Evidence: The "Agri-Backend Daily Report" showing all 7 visualization panels.*
+> docs/argocd.jpg
 
 ---
 
-##  Local Development & Testing
+##  Monitoring & Dashboards
+The **Agri-Backend Daily Report** in Grafana provides 7 critical visualization panels:
+1. **Total Orders:** (Custom Metric) `sum(agri_orders_created_total)`.
+2. **Saga Status:** (Custom Metric) Breakdown of successful vs. failed transactions.
+3. **HTTP Success Rate:** Real-time monitoring of 2xx vs 5xx responses.
+4. **Request Latency:** Database operation durations.
+5. **CPU/Memory:** Resource utilization per pod.
+6. **Path Activity:** Identification of most-hit API endpoints.
+7. **System Uptime:** Real-time health status.
 
-### Running Locally
-1. Ensure databases are accessible via port-forwarding:
+> docs/grafana_ev.jpg **
+
+---
+
+##  How to Deploy
+
+1. **Build & Push Image:**
    ```bash
-   kubectl port-forward svc/postgres-service 5432:5432
-   kubectl port-forward svc/mongodb-service 27017:27017
+   docker build -t your-repo/agri-backend:latest .
+   docker push your-repo/agri-backend:
+   
+2. **Install via Helm:**
+   >helm upgrade --install agri-release ./agri-chart
+3. **Verify Metrics: Access the metrics endpoint at:**
+> http://localhost:8080/metrics
 
-2. Start the server: 
- > dart bin/server.dart 
 
-### Verifying Metrics:
- > The metrics can be verified by visiting: http://localhost:8080/metrics. 
-> 
-> docs/metrics.png 
-
-### Server link
-> http://localhost:8080/health
-
-### Test api 
-> http://localhost:8080/api/orders
-
-### Conclusion
-
-> This assignment demonstrates a complete DevOps lifecycle: from writing robust Dart code with error handling and design patterns to deploying it in a managed Kubernetes environment with automated monitoring.
- 
