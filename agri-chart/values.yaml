@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: azizdevops88/agri-backend
-  tag: "187143d3e680498dbb7982ad2624cc8806d838a7"
+  tag: 1.0.1
   pullPolicy: IfNotPresent
 
 service:
