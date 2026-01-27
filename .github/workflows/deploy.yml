@@ -38,12 +38,14 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/agri-backend:latest
+          tags: |
+           ${{ secrets.DOCKER_USERNAME }}/agri-backend:${{ github.sha }}
+           ${{ secrets.DOCKER_USERNAME }}/agri-backend:latest
 
       - name: Update Helm Chart Tag
         run: |
           # Update the tag in values.yaml
-             sed -i "s|tag: .*|tag: ${{ github.sha }}|" agri-chart/values.yaml
+             sed -i "s|tag: .*|tag: \"${{ github.sha }}\"|" agri-chart/values.yaml
              git config --global user.name "github-actions"
              git config --global user.email "actions@github.com"
              git add agri-chart/values.yaml

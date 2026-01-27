@@ -33,7 +33,7 @@ Deployment is fully automated using **Argo CD**.
 * **Automated Sync:** Argo CD monitors the GitHub repository and synchronizes the cluster state with the Helm chart.
 * **Self-Healing:** Any manual changes to the cluster are automatically reverted by the Argo CD controller to maintain the "Source of Truth" in Git.
 
-> docs/argocd.jpg 
+![Alt text](docs/argocd.jpg)  
 
 ---
 
@@ -47,9 +47,9 @@ The **Agri-Backend Daily Report** in Grafana provides 7 critical visualization p
 6. **Path Activity:** Identification of most-hit API endpoints.
 7. **System Uptime:** Real-time health status.
 
-> docs/grafana_ev.jpg 
-> docs/grafana_ev3.png 
-> docs/grafana_ev4.png
+![Alt text](docs/grafana_ev.jpg) 
+![Alt text](docs/grafana_ev3.png)
+![Alt text](docs/grafana_ev4.png)
 
 ---
 

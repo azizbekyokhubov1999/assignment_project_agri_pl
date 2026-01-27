@@ -2,6 +2,7 @@ import '../domain/entities/order.dart';
 import '../domain/entities/order_status.dart';
 import '../domain/repositories/order_repository.dart';
 import '../domain/services/audit_service.dart';
+import '../infrastructure/monitoring/custom_metrics.dart';
 
 class ProcurementSaga {
   final OrderRepository repository;
@@ -11,6 +12,7 @@ class ProcurementSaga {
 
   /// This function manages the multi-step "workflow" of an order.
   Future<void> execute(Order order) async {
+    CustomMetrics.sagaTransactions.labels(['processing', 'start']).inc();
     try {
       await auditService.logAction(order.id, 'SAGA_START', {'supplier': order.supplierId});
       print(' [Saga] Starting workflow for Order: ${order.id}');
@@ -34,11 +36,16 @@ class ProcurementSaga {
       // Step 3: Finalize Order
       // Here you would normally trigger the Payment gateway.
       await repository.updateOrderStatus(order.id, OrderStatus.completed);
+
+      CustomMetrics.sagaTransactions.labels(['success', 'completed']).inc();
       print('🏁 [Saga] Workflow complete. Order status: COMPLETED');
 
     } catch (e) {
       print('[Saga] Error detected: $e');
+      CustomMetrics.sagaTransactions.labels(['failed', 'error']).inc();
       await _compensate(order.id);
+    }finally {
+      CustomMetrics.pendingOrders.dec();
     }
   }
 

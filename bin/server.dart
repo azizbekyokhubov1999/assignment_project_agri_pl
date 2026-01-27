@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'package:shelf/shelf.dart';
@@ -41,6 +42,22 @@ void main(List<String> args) async {
   CollectorRegistry.defaultRegistry.register(CustomMetrics.ordersCreated);
   CollectorRegistry.defaultRegistry.register(CustomMetrics.sagaTransactions);
   CollectorRegistry.defaultRegistry.register(CustomMetrics.activeOrders);
+  CollectorRegistry.defaultRegistry.register(CustomMetrics.ordersPlaced);
+  CollectorRegistry.defaultRegistry.register(CustomMetrics.priceUpdates);
+  CollectorRegistry.defaultRegistry.register(CustomMetrics.activeProducts);
+  CollectorRegistry.defaultRegistry.register(CustomMetrics.pendingOrders);
+
+  CustomMetrics.activeProducts.value = 124.0;
+
+  CustomMetrics.ordersPlaced.labels(['General']).inc(0);
+  CustomMetrics.sagaTransactions.labels(['success', 'completed']).inc(0);
+  CustomMetrics.sagaTransactions.labels(['failed', 'error']).inc(0);
+  CustomMetrics.pendingOrders.value = 0;
+
+  Timer.periodic(Duration(seconds: 30), (timer) {
+    CustomMetrics.priceUpdates.labels(['Tashkent']).inc();
+  });
+
 
   // 1. Initialize Postgres
   print('//Connecting to PostgreSQL...');

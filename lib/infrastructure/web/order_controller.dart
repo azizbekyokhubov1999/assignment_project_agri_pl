@@ -26,10 +26,6 @@ class OrderController {
           totalAmount: (payload['totalAmount'] as num).toDouble(),
           items: (payload['items'] as List).cast<String>(),
         );
-
-        // We trigger the Saga (it runs asynchronously)
-        // We don't await the WHOLE saga before responding to the user
-        // to keep latency low
         saga.execute(newOrder);
 
 
@@ -37,6 +33,9 @@ class OrderController {
           payload['supplierId'].toString(),
           'general'
         ]).inc();
+
+        CustomMetrics.ordersPlaced.labels(['General']).inc();
+        CustomMetrics.pendingOrders.inc();
 
         httpRequestsTotal.labels(['POST', '/orders', '200']).inc();
 
