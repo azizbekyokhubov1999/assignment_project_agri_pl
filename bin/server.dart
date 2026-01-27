@@ -49,9 +49,9 @@ void main(List<String> args) async {
 
   CustomMetrics.activeProducts.value = 124.0;
 
-  CustomMetrics.ordersPlaced.labels(['General']).inc(0);
-  CustomMetrics.sagaTransactions.labels(['success', 'completed']).inc(0);
-  CustomMetrics.sagaTransactions.labels(['failed', 'error']).inc(0);
+  CustomMetrics.ordersPlaced.labels(['General']).inc();
+  CustomMetrics.sagaTransactions.labels(['success', 'completed']).inc();
+  CustomMetrics.sagaTransactions.labels(['failed', 'error']).inc();
   CustomMetrics.pendingOrders.value = 0;
 
   Timer.periodic(Duration(seconds: 30), (timer) {
