@@ -68,11 +68,17 @@ Any manual changes to the cluster are automatically reverted by the Argo CD cont
 
 The **Agri-Backend Daily Report** in Grafana provides critical visualization panels
 
- **General dashboards(Built-in dashboard):**
+ ****General dashboards(Built-in dashboard):****
 
 ![Alt text](screenshots/built-in.png)
   
-**Custom dashboard based on project data:**
+
+
+
+
+
+
+****Custom dashboard based on project data:****
 
 ![Alt text](screenshots/csmetrics.png)
 
