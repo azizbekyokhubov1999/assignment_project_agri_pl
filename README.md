@@ -71,15 +71,13 @@ The **Agri-Backend Daily Report** in Grafana provides critical visualization pan
  ****General dashboards(Built-in dashboard):****
 
 ![Alt text](screenshots/built-in.png)
-  
 
-
-
-
-
-
-****Custom dashboard based on project data:****
-
+____
+____
+____
+____
+****_Custom dashboard based on project data:_****
+____
 ![Alt text](screenshots/csmetrics.png)
 
 ![Alt text](screenshots/csmetrics1.png)
