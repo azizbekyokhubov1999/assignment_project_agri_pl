@@ -68,36 +68,74 @@ Any manual changes to the cluster are automatically reverted by the Argo CD cont
 
 The **Agri-Backend Daily Report** in Grafana provides critical visualization panels
 
- General dashboards
- 
-  CPU/Memory
+ **General dashboards(Built-in dashboard):**
 
+![Alt text](screenshots/built-in.png)
+  
+**Custom dashboard based on project data:**
 
+![Alt text](screenshots/csmetrics.png)
 
-1. **Total Orders:** (Custom Metric) `sum(agri_orders_created_total)`.
-2. **Saga Status:** (Custom Metric) Breakdown of successful vs. failed transactions.
-3. **HTTP Success Rate:** Real-time monitoring of 2xx vs 5xx responses.
-4. **Request Latency:** Database operation durations.
-5. **CPU/Memory:** Resource utilization per pod.
-6. **Path Activity:** Identification of most-hit API endpoints.
-7. **System Uptime:** Real-time health status.
+![Alt text](screenshots/csmetrics1.png)
 
-![Alt text](screenshots/grafana_ev.jpg) 
-![Alt text](screenshots/grafana_ev3.png)
-![Alt text](screenshots/grafana_ev4.png)
+![Alt text](screenshots/csmetrics2.png)
+
+**Live logs using Loki:**
+
+![Alt text](screenshots/log.png)
+
+## Project Structure:
+
+agri-project/
+├── .github/workflows/
+│   └── build.yml               
+├── agri-chart/                 
+│   ├── templates/              
+│   ├── values.yaml             
+│   └── Chart.yaml             
+├── bin/
+│   └── server.dart             
+├── lib/
+│   ├── application/            
+│   │   └── procurement_saga.dart
+│   ├── core/                  
+│   │   └── outbox/             
+│   ├── domain/                 
+│   │   ├── entities/           
+│   │   ├── repositories/       
+│   │   └── services/           
+│   ├── infrastructure/        
+│   │   ├── concurrency/        
+│   │   ├── monitoring/        
+│   │   ├── persistence/        
+│   │   └── web/                 
+├── Dockerfile                  
+├── docker-compose.yml          
+├── pubspec.yaml                
+└── README.md                   
 
 ---
 
-##  How to Deploy
+##  Development 
 
-1. **Build & Push Image:**
+**Build  & Push Docker Image:**
    ```bash
    docker build -t your-repo/agri-backend:latest .
    docker push your-repo/agri-backend:
-   
-2. **Install via Helm:**
+  ```
+**Install via Helm:**
    >helm upgrade --install agri-release ./agri-chart
-3. **Verify Metrics: Access the metrics endpoint at:**
+
+ **Verify Metrics: Access the metrics endpoint at:**
 > http://localhost:8080/metrics
 
+**Run locally:**
+First we run databases in docker:
+
+>kubectl port-forward svc/postgres-service 5432:5432
+>kubectl port-forward svc/mongodb-service 27017:27017 
+> Then run the application
+
+Access to the application:
+http://localhost:8080/health
 
